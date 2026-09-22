@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import {
@@ -66,11 +67,10 @@ export default function Home() {
               <div className="seal__orbit seal__orbit--one" />
               <div className="seal__orbit seal__orbit--two" />
 
-              <img
-                src={logo}
-                alt=""
-                width="248"
-                height="248"
+              <SchoolLogo
+                size={248}
+                mobileSize={170}
+                priority
               />
             </div>
           </div>
@@ -95,7 +95,7 @@ export default function Home() {
                 </p>
 
                 <h2 id="quick-title">
-                  Todo lo importante, a un clic
+                  Todo lo importante, a un click
                 </h2>
               </div>
 
@@ -399,11 +399,9 @@ export default function Home() {
               className="admission__mark"
               aria-hidden="true"
             >
-              <img
-                src={logo}
-                alt=""
-                width="142"
-                height="142"
+              <SchoolLogo
+                size={142}
+                mobileSize={110}
               />
             </div>
 
@@ -447,83 +445,6 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Footer */}
-
-      <footer
-        className="footer"
-        id="contacto"
-      >
-        <div className="container footer__grid">
-          <div className="footer__brand">
-            <img
-              src={logo}
-              alt="Emblema del Colegio Yangtsé"
-              width="72"
-              height="72"
-            />
-
-            <div>
-              <strong>Colegio Yangtsé</strong>
-
-              <p>
-                Educar con amor por el sendero de la excelencia.
-              </p>
-            </div>
-          </div>
-
-          <div>
-            <h2>Contacto</h2>
-
-            <address>
-              Av. Alcalde Fernando Castillo Velasco 7631
-              <br />
-              La Reina, Santiago
-            </address>
-          </div>
-
-          <div>
-            <h2>Teléfonos</h2>
-
-            <a href="tel:+56225201346">
-              Secretaría: 2 2520 1346
-            </a>
-
-            <a href="tel:+56225201351">
-              Inspectoría: 2 2520 1351
-            </a>
-
-            <a href="tel:+56225201344">
-              Dirección: 2 2520 1344
-            </a>
-          </div>
-
-          <div>
-            <h2>Horario</h2>
-
-            <p>
-              Lunes a viernes
-              <br />
-              08:30 a 16:30 hrs.
-            </p>
-          </div>
-        </div>
-
-        <div className="container footer__bottom">
-          <p>
-            © {new Date().getFullYear()} Colegio Yangtsé
-          </p>
-
-          <div>
-            <a href="#inicio">
-              Volver arriba
-            </a>
-
-            <a href="#contacto">
-              Contacto
-            </a>
-          </div>
-        </div>
-      </footer>
     </>
   );
 }
@@ -800,5 +721,45 @@ function Event({
         <h3>{title}</h3>
       </div>
     </article>
+  );
+}
+
+/* Logo institucional responsivo */
+
+type SchoolLogoProps = {
+  size: number;
+  mobileSize: number;
+  priority?: boolean;
+};
+
+function SchoolLogo({
+  size,
+  mobileSize,
+  priority = false,
+}: SchoolLogoProps) {
+  return (
+    <span
+      style={{
+        position: "relative",
+        display: "block",
+        width: `min(clamp(${mobileSize}px, 45vw, ${size}px), 100%)`,
+        aspectRatio: "1 / 1",
+        flexShrink: 0,
+        marginInline: "auto",
+      }}
+    >
+      <Image
+        src={logo}
+        alt="Emblema del Colegio Yangtsé"
+        fill
+        priority={priority}
+        sizes={`(max-width: 767px) ${mobileSize}px, ${size}px`}
+        style={{
+          objectFit: "contain",
+          objectPosition: "center",
+        }}
+      />
+
+    </span>
   );
 }

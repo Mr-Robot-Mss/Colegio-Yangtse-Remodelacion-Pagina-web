@@ -1,21 +1,10 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+
+import { institutionData } from "@/data/institutionData";
 
 const logo = "/images/logo-colegio-yangtse.png";
 
 export default function GlobalFooter() {
-  const pathname = usePathname();
-
-  /*
-   * La portada ya tiene su propio footer.
-   * Por eso evitamos mostrarlo dos veces en "/".
-   */
-  if (pathname === "/") {
-    return null;
-  }
-
   return (
     <footer
       className="footer"
@@ -25,86 +14,82 @@ export default function GlobalFooter() {
         <div className="footer__brand">
           <img
             src={logo}
-            alt="Emblema del Colegio Yangtsé"
+            alt={`Emblema del ${institutionData.name}`}
             width="72"
             height="72"
           />
 
           <div>
-            <strong>
-              Colegio Yangtsé
-            </strong>
-
-            <p>
-              Educar con amor por el sendero de la excelencia.
-            </p>
+            <strong>{institutionData.name}</strong>
+            <p>{institutionData.slogan}</p>
           </div>
         </div>
 
         <div>
-          <h2>Contacto</h2>
+          <h2>Ubicación</h2>
 
           <address>
-            Av. Alcalde Fernando Castillo Velasco 7631
+            {institutionData.location.address}
             <br />
-            La Reina, Santiago
+            {institutionData.location.commune},{" "}
+            {institutionData.location.city}
           </address>
 
-          <Link href="/contacto">
-            Ver información de contacto
-          </Link>
+          <a
+            href={institutionData.location.googleMapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Ver en Google Maps
+          </a>
         </div>
 
         <div>
           <h2>Teléfonos</h2>
 
-          <a href="tel:+56225201346">
-            Secretaría: 2 2520 1346
-          </a>
+          {institutionData.phones.map((phone) => (
+            <a
+              key={phone.href}
+              href={phone.href}
+            >
+              {phone.display}
+            </a>
+          ))}
 
-          <a href="tel:+56225201351">
-            Inspectoría: 2 2520 1351
-          </a>
-
-          <a href="tel:+56225201344">
-            Dirección: 2 2520 1344
-          </a>
+          <p>
+            {institutionData.publicHours.days}
+            <br />
+            {institutionData.publicHours.hours}
+          </p>
         </div>
 
         <div>
-          <h2>Enlaces</h2>
+          <h2>Correos</h2>
 
-          <Link href="/admision">
-            Admisión
-          </Link>
+          {institutionData.emails.map((email) => (
+            <a
+              key={email.address}
+              href={email.href}
+            >
+              {email.address}
+            </a>
+          ))}
 
-          <Link href="/noticias">
-            Noticias
-          </Link>
-
-          <Link href="/documentos">
-            Documentos
-          </Link>
-
-          <Link href="/calendario">
-            Calendario
+          <Link href="/contacto">
+            Formulario de contacto
           </Link>
         </div>
       </div>
 
       <div className="container footer__bottom">
         <p>
-          © {new Date().getFullYear()} Colegio Yangtsé
+          © {new Date().getFullYear()}{" "}
+          {institutionData.name}
         </p>
 
         <div>
-          <Link href="/">
-            Inicio
-          </Link>
-
-          <Link href="/contacto">
-            Contacto
-          </Link>
+          <Link href="/">Inicio</Link>
+          <Link href="/contacto">Contacto</Link>
         </div>
       </div>
     </footer>

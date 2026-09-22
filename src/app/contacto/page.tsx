@@ -9,22 +9,20 @@ import {
 
 import ContactForm from "@/components/ContactForm";
 import Header from "@/components/Header";
+import { institutionData } from "@/data/institutionData";
 
 export const metadata: Metadata = {
   title: "Contacto",
   description:
-    "Información de contacto, ubicación y formulario del Colegio Yangtsé.",
+    "Información de contacto, ubicación y atención del Colegio Yangtsé.",
 };
-
-const googleMapsUrl =
-  "https://www.google.com/maps/search/?api=1&query=Colegio+Yangtse+La+Reina+Chile";
 
 export default function ContactoPage() {
   return (
     <>
       <Header />
 
-      <main>
+      <main id="contenido">
         <section className="contacto-hero">
           <div className="container">
             <span className="eyebrow">Contacto</span>
@@ -32,8 +30,9 @@ export default function ContactoPage() {
             <h1>Estamos para ayudarte</h1>
 
             <p>
-              Comunícate con nuestro equipo para resolver consultas sobre
-              admisión, documentos, actividades o información académica.
+              Comunícate con nuestro equipo para resolver consultas
+              sobre admisión, documentos, actividades o información
+              académica.
             </p>
           </div>
         </section>
@@ -48,12 +47,18 @@ export default function ContactoPage() {
 
                 <div>
                   <h2>Dirección</h2>
-                  <p>La Reina, Santiago, Región Metropolitana.</p>
+
+                  <p>
+                    {institutionData.location.address}
+                    <br />
+                    {institutionData.location.commune},{" "}
+                    {institutionData.location.city}
+                  </p>
 
                   <a
-                    href={googleMapsUrl}
+                    href={institutionData.location.googleMapsUrl}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                   >
                     Ver ubicación
                     <ExternalLink size={15} />
@@ -67,10 +72,22 @@ export default function ContactoPage() {
                 </div>
 
                 <div>
-                  <h2>Teléfono</h2>
-                  <p>Secretaría y atención general.</p>
+                  <h2>Teléfonos</h2>
 
-                  <span>Información por confirmar</span>
+                  <p>
+                    Consultas y atención general del establecimiento.
+                  </p>
+
+                  <div className="contacto-contact-list">
+                    {institutionData.phones.map((phone) => (
+                      <a
+                        key={phone.href}
+                        href={phone.href}
+                      >
+                        {phone.display}
+                      </a>
+                    ))}
+                  </div>
                 </div>
               </article>
 
@@ -80,12 +97,22 @@ export default function ContactoPage() {
                 </div>
 
                 <div>
-                  <h2>Correo electrónico</h2>
-                  <p>Consultas generales del establecimiento.</p>
+                  <h2>Correos electrónicos</h2>
 
-                  <a href="mailto:contacto@colegioyangtse.cl">
-                    contacto@colegioyangtse.cl
-                  </a>
+                  <p>
+                    Contacto institucional y dirección del colegio.
+                  </p>
+
+                  <div className="contacto-contact-list">
+                    {institutionData.emails.map((email) => (
+                      <a
+                        key={email.address}
+                        href={email.href}
+                      >
+                        {email.address}
+                      </a>
+                    ))}
+                  </div>
                 </div>
               </article>
 
@@ -96,9 +123,12 @@ export default function ContactoPage() {
 
                 <div>
                   <h2>Horario de atención</h2>
-                  <p>Lunes a viernes.</p>
 
-                  <span>Horario por confirmar</span>
+                  <p>{institutionData.publicHours.days}</p>
+
+                  <span>
+                    {institutionData.publicHours.hours}
+                  </span>
                 </div>
               </article>
             </div>
@@ -108,39 +138,66 @@ export default function ContactoPage() {
 
               <aside className="contacto-location">
                 <span className="eyebrow">Ubicación</span>
+
                 <h2>Encuéntranos en La Reina</h2>
 
                 <p>
-                  Revisa la ubicación del establecimiento y planifica tu
-                  recorrido antes de visitarnos.
+                  Revisa la ubicación del establecimiento y planifica
+                  tu recorrido antes de visitarnos.
                 </p>
 
                 <div className="contacto-map-placeholder">
                   <MapPin size={44} />
 
                   <div>
-                    <strong>Colegio Yangtsé</strong>
-                    <span>La Reina, Santiago</span>
+                    <strong>{institutionData.name}</strong>
+
+                    <span>
+                      {institutionData.location.address}
+                    </span>
                   </div>
                 </div>
 
                 <a
                   className="contacto-map-button"
-                  href={googleMapsUrl}
+                  href={institutionData.location.googleMapsUrl}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                 >
                   Abrir en Google Maps
                   <ExternalLink size={17} />
                 </a>
 
-                <div className="contacto-note">
-                  <strong>Antes de publicar</strong>
+                <div className="contacto-school-data">
+                  <h3>Información institucional</h3>
 
-                  <p>
-                    Debemos confirmar con el colegio su dirección exacta,
-                    teléfono, correo y horario oficial.
-                  </p>
+                  <dl>
+                    <div>
+                      <dt>Directora</dt>
+                      <dd>{institutionData.principal}</dd>
+                    </div>
+
+                    <div>
+                      <dt>Total de alumnos</dt>
+                      <dd>
+                        {institutionData.statistics.students}
+                      </dd>
+                    </div>
+
+                    <div>
+                      <dt>Docentes</dt>
+                      <dd>
+                        {institutionData.statistics.teachers}
+                      </dd>
+                    </div>
+
+                    <div>
+                      <dt>Jornada</dt>
+                      <dd>
+                        {institutionData.academicSchedule}
+                      </dd>
+                    </div>
+                  </dl>
                 </div>
               </aside>
             </div>

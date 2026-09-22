@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { institutionData } from "@/data/institutionData";
+
 const menuItems = [
   {
     nombre: "El colegio",
@@ -34,6 +36,9 @@ const menuItems = [
 export default function Header() {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const pathname = usePathname();
+
+  const telefonoPrincipal = institutionData.phones[0];
+  const telefonoAlternativo = institutionData.phones[1];
 
   useEffect(() => {
     setMenuAbierto(false);
@@ -79,18 +84,20 @@ export default function Header() {
 
       <div className="topbar">
         <div className="container topbar__inner">
-          <p>
-            Lunes a viernes · 08:30 a 16:30 hrs.
-          </p>
+          <p>{institutionData.publicHours.short}</p>
 
           <div className="topbar__links">
-            <a href="tel:+56225201346">
-              Secretaría: 2 2520 1346
+            <a href={telefonoPrincipal.href}>
+              {telefonoPrincipal.display}
             </a>
 
-            <span aria-hidden="true">
-              •
-            </span>
+            <span aria-hidden="true">•</span>
+
+            <a href={telefonoAlternativo.href}>
+              {telefonoAlternativo.display}
+            </a>
+
+            <span aria-hidden="true">•</span>
 
             <Link href="/contacto">
               Cómo llegar
@@ -107,23 +114,22 @@ export default function Header() {
           <Link
             className="brand"
             href="/"
-            aria-label="Colegio Yangtsé, inicio"
+            aria-label={`${institutionData.name}, inicio`}
             onClick={cerrarMenu}
           >
             <img
               src="/images/logo-colegio-yangtse.png"
-              alt="Emblema del Colegio Yangtsé"
+              alt={`Emblema del ${institutionData.name}`}
               width="58"
               height="58"
             />
 
             <span className="brand__text">
-              <strong>
-                Colegio Yangtsé
-              </strong>
+              <strong>{institutionData.name}</strong>
 
               <small>
-                La Reina · Santiago
+                {institutionData.location.commune} ·{" "}
+                {institutionData.location.city}
               </small>
             </span>
           </Link>
