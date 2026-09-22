@@ -16,13 +16,42 @@ const intentos = new Map<string, { cantidad: number; vence: number }>();
 
 const LIMITE_INTENTOS = 3;
 const DURACION_LIMITE = 10 * 60 * 1000;
+const TAMANO_MAXIMO_SOLICITUD = 20_000;
+
+const ASUNTOS_PERMITIDOS = new Set([
+  "Admisión",
+  "Información académica",
+  "Documentos",
+  "Convivencia escolar",
+  "Otro",
+]);
+
+function responder(mensaje: string, status = 200) {
+  return NextResponse.json(
+    { mensaje },
+    {
+      status,
+      headers: {
+        "Cache-Control": "no-store, max-age=0",
+      },
+    },
+  );
+}
 
 function obtenerTexto(valor: unknown): string {
-  return typeof valor === "string" ? valor.trim() : "";
+  return typeof valor === "string"
+    ? valor
+        .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "")
+        .trim()
+    : "";
 }
 
 function emailValido(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function telefonoValido(telefono: string): boolean {
+  return !telefono || /^[+\d\s()-]{7,20}$/.test(telefono);
 }
 
 function escaparHtml(texto: string): string {
@@ -46,6 +75,15 @@ function obtenerIp(request: Request): string {
 
 function excedeLimite(ip: string): boolean {
   const ahora = Date.now();
+
+  if (intentos.size > 500) {
+    for (const [clave, valor] of intentos) {
+      if (valor.vence < ahora) {
+        intentos.delete(clave);
+      }
+    }
+  }
+
   const registro = intentos.get(ip);
 
   if (!registro || registro.vence < ahora) {
@@ -69,16 +107,38 @@ function excedeLimite(ip: string): boolean {
 
 export async function POST(request: Request) {
   try {
-    const contentLength = Number(request.headers.get("content-length") || 0);
+    const origin = request.headers.get("origin");
+    const originEsperado = new URL(request.url).origin;
 
-    if (contentLength > 20_000) {
-      return NextResponse.json(
-        { mensaje: "La solicitud es demasiado grande." },
-        { status: 413 },
-      );
+    if (origin && origin !== originEsperado) {
+      return responder("Solicitud no autorizada.", 403);
     }
 
-    const datos = (await request.json()) as DatosContacto;
+    const contentType = request.headers.get("content-type") || "";
+
+    if (!contentType.toLowerCase().includes("application/json")) {
+      return responder("El formato de la solicitud no es válido.", 415);
+    }
+
+    const contentLength = Number(request.headers.get("content-length") || 0);
+
+    if (contentLength > TAMANO_MAXIMO_SOLICITUD) {
+      return responder("La solicitud es demasiado grande.", 413);
+    }
+
+    const cuerpo = await request.text();
+
+    if (cuerpo.length > TAMANO_MAXIMO_SOLICITUD) {
+      return responder("La solicitud es demasiado grande.", 413);
+    }
+
+    let datos: DatosContacto;
+
+    try {
+      datos = JSON.parse(cuerpo) as DatosContacto;
+    } catch {
+      return responder("El contenido de la solicitud no es válido.", 400);
+    }
 
     const nombre = obtenerTexto(datos.nombre);
     const email = obtenerTexto(datos.email).toLowerCase();
@@ -89,9 +149,7 @@ export async function POST(request: Request) {
 
     // Los visitantes reales nunca completan este campo.
     if (website) {
-      return NextResponse.json({
-        mensaje: "Tu mensaje fue enviado correctamente.",
-      });
+      return responder("Tu mensaje fue enviado correctamente.");
     }
 
     if (
@@ -100,26 +158,20 @@ export async function POST(request: Request) {
       !emailValido(email) ||
       email.length > 120 ||
       telefono.length > 20 ||
-      asunto.length < 2 ||
-      asunto.length > 80 ||
+      !telefonoValido(telefono) ||
+      !ASUNTOS_PERMITIDOS.has(asunto) ||
       mensaje.length < 10 ||
       mensaje.length > 1500
     ) {
-      return NextResponse.json(
-        { mensaje: "Revisa los datos ingresados en el formulario." },
-        { status: 400 },
-      );
+      return responder("Revisa los datos ingresados en el formulario.", 400);
     }
 
     const ip = obtenerIp(request);
 
     if (excedeLimite(ip)) {
-      return NextResponse.json(
-        {
-          mensaje:
-            "Has enviado demasiados mensajes. Inténtalo nuevamente más tarde.",
-        },
-        { status: 429 },
+      return responder(
+        "Has enviado demasiados mensajes. Inténtalo nuevamente más tarde.",
+        429,
       );
     }
 
@@ -130,9 +182,9 @@ export async function POST(request: Request) {
     if (!apiKey || !correoDestino || !correoRemitente) {
       console.error("Faltan variables de entorno para el formulario.");
 
-      return NextResponse.json(
-        { mensaje: "El servicio de contacto todavía no está configurado." },
-        { status: 503 },
+      return responder(
+        "El servicio de contacto todavía no está configurado.",
+        503,
       );
     }
 
@@ -175,21 +227,19 @@ export async function POST(request: Request) {
     if (error) {
       console.error("Error de Resend:", error);
 
-      return NextResponse.json(
-        { mensaje: "No fue posible enviar el mensaje. Inténtalo nuevamente." },
-        { status: 502 },
+      return responder(
+        "No fue posible enviar el mensaje. Inténtalo nuevamente.",
+        502,
       );
     }
 
-    return NextResponse.json({
-      mensaje: "Tu mensaje fue enviado correctamente.",
-    });
+    return responder("Tu mensaje fue enviado correctamente.");
   } catch (error) {
     console.error("Error procesando el formulario:", error);
 
-    return NextResponse.json(
-      { mensaje: "Ocurrió un error inesperado al procesar el mensaje." },
-      { status: 500 },
+    return responder(
+      "Ocurrió un error inesperado al procesar el mensaje.",
+      500,
     );
   }
 }

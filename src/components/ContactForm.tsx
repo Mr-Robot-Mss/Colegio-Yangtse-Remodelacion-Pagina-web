@@ -2,12 +2,15 @@
 
 import { FormEvent, useState } from "react";
 import { CheckCircle2, LoaderCircle, Send } from "lucide-react";
+import TurnstileWidget from "@/components/TurnstileWidget";
 
 type EstadoFormulario = "inicial" | "enviando" | "exito" | "error";
 
 export default function ContactForm() {
   const [estado, setEstado] = useState<EstadoFormulario>("inicial");
   const [mensajeEstado, setMensajeEstado] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [captchaReset, setCaptchaReset] = useState(0);
 
   async function enviarFormulario(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -31,6 +34,7 @@ export default function ContactForm() {
           asunto: datosFormulario.get("asunto"),
           mensaje: datosFormulario.get("mensaje"),
           website: datosFormulario.get("website"),
+          turnstileToken,
         }),
       });
 
@@ -41,9 +45,13 @@ export default function ContactForm() {
       }
 
       formulario.reset();
+      setTurnstileToken("");
+      setCaptchaReset((valor) => valor + 1);
       setEstado("exito");
       setMensajeEstado("Tu mensaje fue enviado correctamente.");
     } catch (error) {
+      setTurnstileToken("");
+      setCaptchaReset((valor) => valor + 1);
       setEstado("error");
       setMensajeEstado(
         error instanceof Error
@@ -147,10 +155,15 @@ export default function ContactForm() {
         </div>
       </div>
 
+      <TurnstileWidget
+        onTokenChange={setTurnstileToken}
+        resetSignal={captchaReset}
+      />
+
       <button
         className="contact-submit"
         type="submit"
-        disabled={estado === "enviando"}
+        disabled={estado === "enviando" || !turnstileToken}
       >
         {estado === "enviando" ? (
           <>
