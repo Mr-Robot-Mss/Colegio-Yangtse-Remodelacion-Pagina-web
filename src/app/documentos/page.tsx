@@ -19,7 +19,7 @@ export default function DocumentosPage() {
     <>
       <Header />
 
-      <main>
+      <main id="contenido">
         <section className="documents-hero">
           <div className="container">
             <Link

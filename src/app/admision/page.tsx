@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -98,11 +99,12 @@ export default function AdmisionPage() {
             >
               <div className="admission-page-hero__orbit" />
 
-              <img
+              <Image
                 src="/images/logo-colegio-yangtse.png"
-                alt=""
-                width="220"
-                height="220"
+                alt="Emblema del Colegio Yangtsé"
+                width={220}
+                height={220}
+                priority
               />
             </div>
           </div>

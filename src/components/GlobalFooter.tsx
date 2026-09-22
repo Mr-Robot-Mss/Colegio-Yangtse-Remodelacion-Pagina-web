@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { institutionData } from "@/data/institutionData";
@@ -12,11 +13,11 @@ export default function GlobalFooter() {
     >
       <div className="container footer__grid">
         <div className="footer__brand">
-          <img
+          <Image
             src={logo}
             alt={`Emblema del ${institutionData.name}`}
-            width="72"
-            height="72"
+            width={72}
+            height={72}
           />
 
           <div>

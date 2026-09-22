@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -41,10 +42,6 @@ export default function Header() {
   const telefonoAlternativo = institutionData.phones[1];
 
   useEffect(() => {
-    setMenuAbierto(false);
-  }, [pathname]);
-
-  useEffect(() => {
     function cerrarConEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
         setMenuAbierto(false);
@@ -60,6 +57,32 @@ export default function Header() {
       );
     };
   }, []);
+
+  useEffect(() => {
+    function cerrarEnEscritorio() {
+      if (window.innerWidth > 1000) {
+        setMenuAbierto(false);
+      }
+    }
+
+    window.addEventListener("resize", cerrarEnEscritorio);
+
+    return () => {
+      window.removeEventListener("resize", cerrarEnEscritorio);
+    };
+  }, []);
+
+  useEffect(() => {
+    const overflowAnterior = document.body.style.overflow;
+
+    if (menuAbierto && window.innerWidth <= 1000) {
+      document.body.style.overflow = "hidden";
+    }
+
+    return () => {
+      document.body.style.overflow = overflowAnterior;
+    };
+  }, [menuAbierto]);
 
   function cerrarMenu() {
     setMenuAbierto(false);
@@ -117,11 +140,12 @@ export default function Header() {
             aria-label={`${institutionData.name}, inicio`}
             onClick={cerrarMenu}
           >
-            <img
+            <Image
               src="/images/logo-colegio-yangtse.png"
               alt={`Emblema del ${institutionData.name}`}
-              width="58"
-              height="58"
+              width={58}
+              height={58}
+              priority
             />
 
             <span className="brand__text">

@@ -3280,3 +3280,669 @@ a {
   }
 }
 
+/* ================================================================
+   AJUSTES RESPONSIVOS GENERALES
+   ================================================================ */
+
+html {
+  min-width: 280px;
+  scroll-padding-top: 110px;
+}
+
+body {
+  min-width: 280px;
+  overflow-x: clip;
+}
+
+main,
+section,
+header,
+footer,
+nav,
+.container,
+.hero__grid,
+.about__grid,
+.resources__grid,
+.agenda__panel,
+.admission__panel,
+.footer__grid,
+.contacto-info-grid,
+.contacto-main-grid {
+  min-width: 0;
+}
+
+.hero__grid > *,
+.about__grid > *,
+.resources__grid > *,
+.agenda__panel > *,
+.admission__panel > *,
+.footer__grid > *,
+.contacto-info-grid > *,
+.contacto-main-grid > *,
+.calendar-card > *,
+.document-card > *,
+.article-resources > * {
+  min-width: 0;
+}
+
+h1,
+h2,
+h3,
+p,
+address,
+dt,
+dd,
+a,
+strong,
+small,
+span {
+  overflow-wrap: break-word;
+}
+
+button,
+input,
+select,
+textarea {
+  max-width: 100%;
+}
+
+svg {
+  flex-shrink: 0;
+}
+
+.hero__seal img,
+.admission__mark img,
+.admission-page-hero__seal img {
+  box-sizing: border-box;
+  border: 4px solid rgba(255, 255, 255, 0.88);
+  border-radius: 50%;
+  background: #a7181c;
+  box-shadow:
+    0 0 0 8px rgba(255, 255, 255, 0.1),
+    0 22px 38px rgba(42, 0, 4, 0.3);
+}
+
+.admission__mark img {
+  border-color: rgba(148, 27, 30, 0.14);
+  box-shadow:
+    0 0 0 7px rgba(148, 27, 30, 0.06),
+    0 15px 30px rgba(92, 13, 16, 0.16);
+}
+
+@media (max-width: 1000px) {
+  .main-nav {
+    z-index: 50;
+    max-height: calc(100dvh - 100px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .main-nav > a {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+  }
+
+  .main-nav .nav-cta {
+    justify-content: center;
+  }
+}
+
+/* Tablet vertical y celulares grandes */
+
+@media (max-width: 900px) {
+  .hero__grid {
+    min-height: auto;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding-block: 74px 125px;
+  }
+
+  .hero__copy {
+    max-width: 760px;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .hero__lead {
+    margin-inline: auto;
+  }
+
+  .hero__actions {
+    justify-content: center;
+  }
+
+  .hero__seal {
+    min-height: 250px;
+    margin-top: 0;
+  }
+
+  .seal__orbit--one {
+    width: 250px;
+  }
+
+  .seal__orbit--two {
+    width: 330px;
+  }
+
+  .about__grid,
+  .resources__grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .about__copy {
+    max-width: 760px;
+  }
+
+  .about__visual {
+    width: min(100%, 680px);
+    min-height: 440px;
+    order: 2;
+  }
+
+  .agenda__panel {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding: 50px 42px;
+  }
+
+  .agenda__intro {
+    max-width: 600px;
+  }
+
+  .agenda__button {
+    position: static;
+    justify-self: start;
+  }
+
+  .admission-page-hero__grid,
+  .admission-information__grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .admission-page-hero__seal {
+    min-height: 270px;
+  }
+
+  .admission-page-hero__orbit {
+    width: 260px;
+    height: 260px;
+  }
+
+  .footer__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 42px 32px;
+  }
+
+  .footer__grid > div:last-child {
+    grid-column: auto;
+  }
+}
+
+/* Celular y tablet pequeña */
+
+@media (max-width: 760px) {
+  :root {
+    --container: min(100% - 28px, 620px);
+  }
+
+  .topbar__links a:nth-of-type(2),
+  .topbar__links span,
+  .topbar__links a:last-child {
+    display: none;
+  }
+
+  .topbar__links {
+    justify-content: center;
+  }
+
+  .header__inner {
+    gap: 12px;
+  }
+
+  .brand {
+    min-width: 0;
+    gap: 10px;
+  }
+
+  .brand__text {
+    min-width: 0;
+  }
+
+  .brand__text strong {
+    font-size: clamp(1rem, 4.7vw, 1.13rem);
+    white-space: nowrap;
+  }
+
+  .menu-button {
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
+  }
+
+  .hero__grid {
+    gap: 24px;
+    padding-block: 58px 105px;
+  }
+
+  .hero h1,
+  .documents-hero h1,
+  .news-page-hero h1,
+  .calendar-page-hero h1,
+  .article-hero h1,
+  .admission-page-hero h1,
+  .contact-page-hero h1,
+  .contacto-hero h1 {
+    font-size: clamp(2.35rem, 11vw, 3.8rem);
+    line-height: 1.02;
+  }
+
+  .hero__lead,
+  .documents-hero__description,
+  .news-page-hero__description,
+  .calendar-page-hero__description,
+  .article-summary,
+  .admission-page-hero__description,
+  .contact-page-hero__description {
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  .hero__seal {
+    min-height: 220px;
+  }
+
+  .hero__seal > span {
+    width: clamp(145px, 44vw, 180px) !important;
+  }
+
+  .hero__seal img {
+    width: 100%;
+  }
+
+  .seal__orbit--one {
+    width: 205px;
+  }
+
+  .seal__orbit--two {
+    width: 270px;
+  }
+
+  .section-heading h2,
+  .about h2,
+  .resources h2,
+  .agenda h2,
+  .admission h2,
+  .all-documents__header h2,
+  .admission-process__heading h2,
+  .admission-information h2,
+  .admission-final h2 {
+    font-size: clamp(1.85rem, 8vw, 2.55rem);
+  }
+
+  .section-heading--inline {
+    display: grid;
+    align-items: start;
+    gap: 13px;
+  }
+
+  .section-heading .text-link {
+    justify-self: start;
+  }
+
+  .quick-card,
+  .document-list a,
+  .calendar-card,
+  .document-card,
+  .news-card,
+  .contacto-info-card,
+  .admission-step {
+    max-width: 100%;
+  }
+
+  .about__visual {
+    width: 100%;
+    min-height: 350px;
+  }
+
+  .about__number {
+    left: 20px;
+    font-size: 9rem;
+  }
+
+  .about__quote {
+    font-size: clamp(2rem, 9vw, 2.55rem);
+  }
+
+  .agenda__panel {
+    padding: 40px 24px;
+  }
+
+  .agenda__events article > div {
+    min-width: 0;
+  }
+
+  .admission__panel {
+    gap: 28px;
+  }
+
+  .footer {
+    padding-top: 54px;
+  }
+
+  .footer__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .footer__grid a,
+  .footer address {
+    overflow-wrap: anywhere;
+  }
+
+  .documents-back {
+    margin-bottom: 30px;
+  }
+
+  .documents-hero,
+  .news-page-hero,
+  .calendar-page-hero,
+  .article-hero,
+  .admission-page-hero,
+  .contact-page-hero {
+    padding-block: 48px 62px;
+  }
+
+  .all-documents,
+  .news-page-content,
+  .calendar-page-content,
+  .article-content {
+    padding-block: 58px 72px;
+  }
+
+  .document-card,
+  .calendar-card,
+  .article-resources,
+  .admission-help,
+  .contact-form,
+  .contacto-location {
+    padding: 24px;
+  }
+
+  .article-text {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .article-decoration span {
+    width: 80px;
+    height: 80px;
+    font-size: 3rem;
+  }
+
+  .admission-page-hero__grid {
+    gap: 28px;
+  }
+
+  .admission-page-hero__seal {
+    min-height: 230px;
+  }
+
+  .admission-page-hero__seal img {
+    width: 150px;
+    height: auto;
+  }
+
+  .admission-page-hero__orbit {
+    width: 220px;
+    height: 220px;
+  }
+
+  .contacto-info-card > div:last-child {
+    min-width: 0;
+  }
+
+  .contact-field input,
+  .contact-field select,
+  .contact-field textarea {
+    font-size: 16px;
+  }
+}
+
+/* Celulares angostos */
+
+@media (max-width: 430px) {
+  :root {
+    --container: min(100% - 24px, 406px);
+  }
+
+  .brand img {
+    width: 43px;
+    height: 43px;
+  }
+
+  .brand__text strong {
+    font-size: 1rem;
+  }
+
+  .hero__grid {
+    padding-block: 50px 94px;
+  }
+
+  .hero__actions,
+  .not-found-page__actions {
+    width: 100%;
+  }
+
+  .hero__actions .button,
+  .not-found-page__actions .button,
+  .admission-page-hero .button,
+  .admission-information .button,
+  .admission-final .button,
+  .article-resources .button {
+    width: 100%;
+  }
+
+  .hero__seal {
+    min-height: 200px;
+  }
+
+  .seal__orbit--one {
+    width: 185px;
+  }
+
+  .seal__orbit--two {
+    width: 235px;
+  }
+
+  .quick-card {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 12px;
+    padding: 17px;
+  }
+
+  .notice__inner {
+    gap: 10px;
+  }
+
+  .section {
+    padding-block: 64px;
+  }
+
+  .about__visual {
+    min-height: 320px;
+  }
+
+  .about__stamp {
+    top: 25px;
+    right: 20px;
+    width: 82px;
+    height: 82px;
+    font-size: 0.58rem;
+  }
+
+  .about__quote {
+    right: 22px;
+    bottom: 28px;
+    left: 22px;
+  }
+
+  .news-card__art,
+  .news-card--featured .news-card__art,
+  .news-card:last-child .news-card__art {
+    height: 190px;
+  }
+
+  .news-card__body {
+    padding: 20px;
+  }
+
+  .document-list a {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 13px;
+  }
+
+  .agenda__panel {
+    padding: 34px 20px;
+    border-radius: 20px;
+  }
+
+  .agenda__events article {
+    grid-template-columns: 52px minmax(0, 1fr);
+    gap: 13px;
+  }
+
+  .admission__panel {
+    padding: 30px 20px;
+  }
+
+  .footer__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer__brand {
+    grid-column: auto;
+  }
+
+  .footer__bottom div {
+    flex-wrap: wrap;
+    gap: 14px 22px;
+  }
+
+  .document-card {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 22px;
+  }
+
+  .document-card__button {
+    grid-column: auto;
+  }
+
+  .calendar-card {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+
+  .calendar-card__date {
+    width: 75px;
+  }
+
+  .article-resources {
+    grid-template-columns: 1fr;
+    padding: 22px;
+  }
+
+  .article-navigation {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admission-step,
+  .admission-help,
+  .contact-form,
+  .contacto-location {
+    padding: 22px;
+  }
+
+  .admission-information li {
+    align-items: flex-start;
+  }
+
+  .admission-final__panel {
+    padding: 26px 22px;
+  }
+
+  .contacto-hero {
+    padding-block: 3.5rem;
+  }
+
+  .contacto-info-card {
+    display: grid;
+    min-height: 0;
+    padding: 21px;
+  }
+
+  .contacto-map-placeholder {
+    align-items: flex-start;
+    flex-direction: column;
+    min-height: 0;
+    padding: 1.25rem;
+  }
+
+  .contact-form-heading h2 {
+    font-size: 1.75rem;
+  }
+
+  .contact-submit {
+    width: 100%;
+  }
+}
+
+/* Ancho mínimo soportado */
+
+@media (max-width: 340px) {
+  :root {
+    --container: calc(100% - 20px);
+  }
+
+  .brand__text strong {
+    font-size: 0.93rem;
+  }
+
+  .hero h1,
+  .documents-hero h1,
+  .news-page-hero h1,
+  .calendar-page-hero h1,
+  .article-hero h1,
+  .admission-page-hero h1,
+  .contacto-hero h1 {
+    font-size: 2.15rem;
+  }
+
+  .hero__seal > span {
+    width: 140px !important;
+  }
+
+  .seal__orbit--one {
+    width: 170px;
+  }
+
+  .seal__orbit--two {
+    width: 215px;
+  }
+
+  .quick-card__icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .agenda__events article {
+    grid-template-columns: 46px minmax(0, 1fr);
+  }
+
+  .agenda__events time b {
+    font-size: 2rem;
+  }
+}
