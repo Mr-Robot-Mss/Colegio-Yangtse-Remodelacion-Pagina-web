@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import SchoolEmblem from "@/components/SchoolEmblem";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -99,13 +99,7 @@ export default function AdmisionPage() {
             >
               <div className="admission-page-hero__orbit" />
 
-              <Image
-                src="/images/logo-colegio-yangtse.png"
-                alt="Emblema del Colegio Yangtsé"
-                width={220}
-                height={220}
-                priority
-              />
+              <SchoolEmblem size={220} priority />
             </div>
           </div>
         </section>

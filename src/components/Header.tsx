@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import SchoolEmblem from "@/components/SchoolEmblem";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -140,13 +140,7 @@ export default function Header() {
             aria-label={`${institutionData.name}, inicio`}
             onClick={cerrarMenu}
           >
-            <Image
-              src="/images/logo-colegio-yangtse.png"
-              alt={`Emblema del ${institutionData.name}`}
-              width={58}
-              height={58}
-              priority
-            />
+            <SchoolEmblem size={58} priority />
 
             <span className="brand__text">
               <strong>{institutionData.name}</strong>

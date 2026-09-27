@@ -1,0 +1,93 @@
+import { test, expect } from "@playwright/test";
+test("administra noticias, eventos y PDF sin exponer borradores", async ({ page, browser }) => {
+  const publicContext = await browser.newContext();
+  const visitor = await publicContext.newPage();
+  const suffix = Date.now().toString();
+  const news = "Noticia prueba " + suffix;
+  const event = "Actividad prueba " + suffix;
+  const document = "Documento prueba " + suffix;
+  const slug = "prueba-" + suffix;
+  await page.goto("/admin");
+  await expect(page).toHaveURL(/\/admin\/login/);
+  await page.getByLabel("Correo electrónico").fill(process.env.ADMIN_EMAIL!);
+  await page.getByLabel("Contraseña", { exact: true }).fill((process.env.TEST_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD)!);
+  await page.getByRole("button", { name: "Ingresar al mantenedor" }).click();
+  await expect(page).toHaveURL(/\/admin$/);
+  await page.getByRole("link", { name: "+ Crear noticia" }).click();
+  await page.getByLabel("Título", { exact: true }).fill(news);
+  await page.getByLabel("Categoría", { exact: true }).fill("Comunidad");
+  await page.getByLabel("URL de la noticia").fill(slug);
+  await page.getByLabel("Resumen", { exact: true }).fill("Resumen de prueba");
+  await page.getByLabel(/^Contenido/).fill("Primer párrafo.\n\nSegundo párrafo.");
+  await page.getByRole("button", { name: "Crear contenido" }).click();
+  await expect(page).toHaveURL(/\/admin\?status=saved/);
+  await expect(page.getByRole("row").filter({ hasText: news })).toContainText("Borrador");
+  expect((await visitor.goto("/noticias/" + slug))?.status()).toBe(404);
+  await page.getByRole("row").filter({ hasText: news }).getByRole("link", { name: /Editar/ }).click();
+  await page.getByLabel("Publicado:").check();
+  await page.getByRole("button", { name: "Guardar cambios" }).click();
+  await expect(page).toHaveURL(/\/admin\?status=saved/);
+  await visitor.goto("/noticias/" + slug);
+  await expect(visitor.getByRole("heading", { name: news })).toBeVisible();
+  await visitor.goto("/");
+  await expect(visitor.getByRole("heading", { name: news })).toBeVisible();
+  await page.getByRole("link", { name: "+ Agregar actividad" }).click();
+  await page.getByLabel("Título", { exact: true }).fill(event);
+  await page.getByLabel("Categoría", { exact: true }).fill("Académico");
+  await page.getByLabel("Fecha de inicio").fill("2027-03-05");
+  await page.getByLabel("Fecha de término").fill("2027-03-06");
+  await page.getByLabel("Hora (opcional)").fill("09:30");
+  await page.getByLabel("Lugar (opcional)").fill("Patio central");
+  await page.getByLabel("Publicado:").check();
+  await page.getByRole("button", { name: "Crear contenido" }).click();
+  await expect(page).toHaveURL(/\/admin\?status=saved/);
+  await visitor.goto("/calendario?mes=2027-03");
+  await expect(visitor.getByRole("heading", { name: event })).toBeVisible();
+  await expect(visitor.getByText("09:30")).toBeVisible();
+  await visitor.goto("/calendario?mes=2027-04");
+  await expect(visitor.getByRole("heading", { name: event })).toHaveCount(0);
+  await page.getByRole("link", { name: "+ Cargar documento" }).click();
+  await page.getByLabel("Título", { exact: true }).fill(document);
+  await page.getByLabel("Categoría", { exact: true }).fill("Institucional");
+  await page.locator('input[type=file]').setInputFiles({ name: "prueba.pdf", mimeType: "application/pdf", buffer: Buffer.from("%PDF-1.4\n%%EOF") });
+  await page.getByRole("button", { name: "Crear contenido" }).click();
+  await expect(page).toHaveURL(/\/admin\?status=saved/);
+  await page.getByRole("row").filter({ hasText: document }).getByRole("link", { name: /Editar/ }).click();
+  const fileURL = await page.getByRole("link", { name: "Ver archivo actual" }).getAttribute("href");
+  expect((await publicContext.request.get(fileURL!)).status()).toBe(404);
+  expect((await page.request.get(fileURL!)).status()).toBe(200);
+  await page.getByLabel("Publicado:").check();
+  await page.getByRole("button", { name: "Guardar cambios" }).click();
+  await expect(page).toHaveURL(/\/admin\?status=saved/);
+  const download = await publicContext.request.get(fileURL!);
+  expect(download.status()).toBe(200);
+  expect(download.headers()["content-type"]).toContain("application/pdf");
+  await page.getByRole("row").filter({ hasText: document }).getByRole("link", { name: /Editar/ }).click();
+  await page.locator('input[type=file]').setInputFiles({ name: "reemplazo.pdf", mimeType: "application/pdf", buffer: Buffer.from("%PDF-1.7nArchivo reemplazadon%%EOF") });
+  await page.getByRole("button", { name: "Guardar cambios" }).click();
+  await expect(page).toHaveURL("http://localhost:3000/admin?status=saved");
+  expect(await (await publicContext.request.get(fileURL!)).text()).toContain("Archivo reemplazado");
+  await page.screenshot({ path: "test-results/admin-desktop.png", fullPage: true, caret: "initial" });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({ path: "test-results/admin-mobile.png", fullPage: true, caret: "initial" });
+  expect(await page.evaluate(() => globalThis.document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.setViewportSize({ width: 1280, height: 800 });
+  for (const title of [news, event, document]) {
+    await page.goto("/admin");
+    await page.getByRole("row").filter({ hasText: title }).getByRole("link", { name: /Editar/ }).click();
+    await page.getByText("Eliminar contenido", { exact: true }).click();
+    await page.getByLabel("Confirmo eliminar").check();
+    await page.getByRole("button", { name: "Eliminar definitivamente" }).click();
+    await expect(page).toHaveURL(/\/admin\?status=deleted/);
+    await expect(page.getByRole("row").filter({ hasText: title })).toHaveCount(0);
+  }
+  expect((await publicContext.request.get(fileURL!)).status()).toBe(404);
+  await page.getByRole("button", { name: "Cerrar sesión" }).click();
+  await expect(page).toHaveURL(/\/admin\/login/);
+  await publicContext.close();
+});
+
+
+
+
+

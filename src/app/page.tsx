@@ -1,16 +1,17 @@
 import type { ReactNode } from "react";
-import Image from "next/image";
+import SchoolEmblem from "@/components/SchoolEmblem";
 import Link from "next/link";
 import Header from "@/components/Header";
-import {
-  documentos,
-  eventos,
-  noticias,
-} from "@/data/siteData";
+import { publicContent } from "@/lib/content";
 
-const logo = "/images/logo-colegio-yangtse.png";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+export default async function Home() {
+  const data = await publicContent();
+  const noticias = data.noticias.slice(0, 3);
+  const documentos = data.documentos.slice(0, 4);
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Santiago" }).format(new Date());
+  const eventos = data.eventos.filter(e => (e.fechaFin || e.fechaISO) >= today).slice(0, 3);
   return (
     <>
       <Header />
@@ -363,9 +364,19 @@ export default function Home() {
                   Actividades y fechas relevantes para nuestra
                   comunidad.
                 </p>
+
+                <Link
+                  className="button button--light agenda__button"
+                  href="/calendario"
+                >
+                  Ver calendario completo
+                </Link>
               </div>
 
               <div className="agenda__events">
+                {!eventos.length && (
+                  <p className="agenda__empty">Pronto compartiremos nuevas actividades y fechas para nuestra comunidad.</p>
+                )}
                 {eventos.map((evento) => (
                   <Event
                     key={evento.id}
@@ -377,12 +388,6 @@ export default function Home() {
                 ))}
               </div>
 
-              <Link
-                className="button button--light agenda__button"
-                href="/calendario"
-              >
-                Ver calendario completo
-              </Link>
             </div>
           </div>
         </section>
@@ -748,17 +753,7 @@ function SchoolLogo({
         marginInline: "auto",
       }}
     >
-      <Image
-        src={logo}
-        alt="Emblema del Colegio Yangtsé"
-        fill
-        priority={priority}
-        sizes={`(max-width: 767px) ${mobileSize}px, ${size}px`}
-        style={{
-          objectFit: "contain",
-          objectPosition: "center",
-        }}
-      />
+      <SchoolEmblem size={size} priority={priority} fluid />
 
     </span>
   );

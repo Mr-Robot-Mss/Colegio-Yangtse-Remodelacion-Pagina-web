@@ -1,9 +1,11 @@
 import type { MetadataRoute } from "next";
 
 import { siteConfig } from "@/config/site";
-import { noticias } from "@/data/siteData";
+import { publicContent } from "@/lib/content";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export const dynamic = "force-dynamic";
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const { noticias } = await publicContent();
   const routes = [
     "",
     "/admision",

@@ -7,10 +7,7 @@ import {
   FileText,
 } from "lucide-react";
 import Header from "@/components/Header";
-import {
-  noticias,
-  obtenerNoticiaPorSlug,
-} from "@/data/siteData";
+import { publicContent } from "@/lib/content";
 
 type NoticiaPageProps = {
   params: Promise<{
@@ -18,19 +15,13 @@ type NoticiaPageProps = {
   }>;
 };
 
-export const dynamicParams = false;
-
-export function generateStaticParams() {
-  return noticias.map((noticia) => ({
-    slug: noticia.slug,
-  }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
 }: NoticiaPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const noticia = obtenerNoticiaPorSlug(slug);
+  const noticia = (await publicContent()).noticias.find(item => item.slug === slug);
 
   if (!noticia) {
     return {
@@ -48,7 +39,7 @@ export default async function NoticiaPage({
   params,
 }: NoticiaPageProps) {
   const { slug } = await params;
-  const noticia = obtenerNoticiaPorSlug(slug);
+  const noticia = (await publicContent()).noticias.find(item => item.slug === slug);
 
   if (!noticia) {
     notFound();

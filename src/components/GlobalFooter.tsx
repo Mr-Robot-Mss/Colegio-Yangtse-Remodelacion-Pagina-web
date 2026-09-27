@@ -1,9 +1,8 @@
-import Image from "next/image";
+import SchoolEmblem from "@/components/SchoolEmblem";
 import Link from "next/link";
 
 import { institutionData } from "@/data/institutionData";
 
-const logo = "/images/logo-colegio-yangtse.png";
 
 export default function GlobalFooter() {
   return (
@@ -13,12 +12,7 @@ export default function GlobalFooter() {
     >
       <div className="container footer__grid">
         <div className="footer__brand">
-          <Image
-            src={logo}
-            alt={`Emblema del ${institutionData.name}`}
-            width={72}
-            height={72}
-          />
+          <SchoolEmblem size={72} />
 
           <div>
             <strong>{institutionData.name}</strong>

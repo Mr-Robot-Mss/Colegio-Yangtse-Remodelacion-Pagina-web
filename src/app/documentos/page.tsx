@@ -6,7 +6,7 @@ import {
   FileText,
 } from "lucide-react";
 import Header from "@/components/Header";
-import { documentos } from "@/data/siteData";
+import { publicContent } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Documentos",
@@ -14,7 +14,9 @@ export const metadata: Metadata = {
     "Documentos oficiales, reglamentos e información institucional del Colegio Yangtsé.",
 };
 
-export default function DocumentosPage() {
+export const dynamic = "force-dynamic";
+export default async function DocumentosPage() {
+  const { documentos } = await publicContent();
   return (
     <>
       <Header />
@@ -64,6 +66,7 @@ export default function DocumentosPage() {
               </p>
             </div>
 
+            {!documentos.length && <p>No hay documentos publicados actualmente.</p>}
             <div className="all-documents__grid">
               {documentos.map((documento) => (
                 <article

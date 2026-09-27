@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
-import { noticias } from "@/data/siteData";
+import { publicContent } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Noticias y comunicados",
@@ -10,7 +10,9 @@ export const metadata: Metadata = {
     "Noticias, comunicados y actividades de la comunidad educativa del Colegio Yangtsé.",
 };
 
-export default function NoticiasPage() {
+export const dynamic = "force-dynamic";
+export default async function NoticiasPage() {
+  const { noticias } = await publicContent();
   return (
     <>
       <Header />
